@@ -8,4 +8,4 @@ Give the exact user profile name and get public photos of that user downloaded.
 
 Install requirements.txt:-
 
-    **$** pip install -r requirements.txt
+    $ pip install -r requirements.txt
