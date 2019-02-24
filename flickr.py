@@ -19,11 +19,25 @@ def url_list_maker(uiv):
             url_list.append(photo.get('url_o')) # o ->original size; other vars instead will cause error for some due to unavailibility.
         except: pass
     return url_list
+    
+def mkname(name):
+    num = 0
+    woo = name
+    while os.path.exists(woo):
+        num += 0
+        woo = woo + str(num)
+    return woo
 
     
 urls = url_list_maker(user_id_val)
-os.mkdir('Flickr_Imgs')
+os.mkdir(mkname('Flickr_Imgs'))
 os.chdir('Flickr_Imgs')
+counter = 0
+var = 100.0/(len(urls)*1.0)
+print('Downloading ... {:03}%'.format(int(counter)), end = '', flush = True)
 for i in urls:
-    os.system('wget {}'.format(i)) # wget command thus linux restriction
- 
+    os.system('wget -q {}'.format(i)) # wget command thus linux restriction , -q be quiet in speaking
+    counter += var
+    print('\b\b\b\b', end = '', flush = True)
+    print('{:03}%'.format(int(counter)), end = '', flush = True)
+print('\nDone')
