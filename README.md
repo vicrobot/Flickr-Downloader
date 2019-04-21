@@ -1,6 +1,8 @@
   **Flickr-Downloader** 
   
 Linux only.
+
+Download Flickr images(public) of any user across flickr.
   
 Firstly get your *API KEYS* & *SECRET KEY*  from [here](https://www.flickr.com/services/api/keys/)
 
