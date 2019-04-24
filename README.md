@@ -1,6 +1,4 @@
   **Flickr-Downloader** 
-  
-Linux only.
 
 Download Flickr images(public) of any user across flickr.
   
