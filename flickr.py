@@ -25,11 +25,12 @@ def url_list_maker(uiv):
 
 def mkname(name):
     num = 0
-    woo = name
-    while os.path.exists(woo):
-        num += 0
-        woo = woo + str(num)
-    return woo
+    name = str(name)
+    new_n = name[:]
+    while os.path.exists(new_n):
+        num += 1
+        new_n = name + str(num)
+    return new_n
 
 urls = url_list_maker(user_id_val)
 
@@ -40,14 +41,13 @@ os.chdir(new_dir)
 # terminal show
 counter = 0
 var = 100.0/(len(urls)*1.0)
-deciP = int(str(var).split('.')[1][:4])
-print('Downloading ... {:03}%'.format(int(counter)), end = '', flush = True)
+print('Downloading ... {:05}%'.format(int(counter)), end = '', flush = True)
 b, imagecount = 0, 1
 for i in urls:
     try: urllib.request.urlretrieve( i, 'T{0}'.format(imagecount))
     except: pass
     counter += var
-    print('\b'*4, end = '', flush = True)
+    print('\b'*6, end = '', flush = True)
     imagecount += 1
-    print('{:03}%'.format(int(counter)), end = '', flush = True)
+    print('{:05}'.format(counter)[:5]+'%', end = '', flush = True)
 print('\nDone')
