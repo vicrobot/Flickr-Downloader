@@ -2,6 +2,11 @@ import flickrapi
 import flickr_api
 import urllib.request
 import os
+import sys
+
+if __name__ != "__main__":
+    print("File 'flickr.py' not meant for transendings and imports, direct use only")
+    sys.exit(0)
 
 #functions
 def url_list_maker(uiv):
@@ -25,8 +30,12 @@ def mkname(name):
     
 
 #reading logs
-with open('logs', 'r') as  var:
-    lines = [i.rstrip() for i in var.readlines() if len(i) ]
+try:
+    with open('logs', 'r') as  var:
+        lines = [i.rstrip() for i in var.readlines() if len(i) ]
+except FileNotFoundError:
+    with open('logs', 'w+') as  var:
+        lines = [i.rstrip() for i in var.readlines() if len(i) ]
 bool_contain = -1
 bool_ask_old = 0
 dict_ids = {}
@@ -36,12 +45,15 @@ dict_ids = {}
 for line in lines:
     if 'id1' in line: 
         bool_contain += 1
-        #error handling1
-        dict_ids['id1'] = line.split(' ')[1]
+        dict_ids['id1'] = ''.join(line.split(' ')[1:])
     if 'id2' in line:
         bool_contain += 1
-        #error handling1
-        dict_ids['id2'] = line.split(' ')[1]
+        dict_ids['id2'] = ''.join(line.split(' ')[1:])
+if bool_contain == 1:
+    flickr_api.set_keys(api_key = dict_ids['id1'], api_secret = dict_ids['id2'])
+    try: flickr_api.Person.findByUserName('vicro_bot').id
+    except flickr_api.flickrerrors.FlickrAPIError:
+        bool_contain = 0
 
 if bool_contain == 1:
     inp_ask_old = input('Use previously saved keys?(Yes or No)').rstrip().lower()
