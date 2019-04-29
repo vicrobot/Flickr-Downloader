@@ -94,7 +94,10 @@ print('Downloading ... {:05}%'.format(int(counter)), end = '', flush = True)
 b, imagecount = 0, 1
 for i in urls:
     try: urllib.request.urlretrieve( i, 'T{0}'.format(imagecount))
-    except: pass
+    except KeyboardInterrupt:
+        print('\nAbort')
+        sys.exit()
+    except Exception: pass
     counter += var
     print('\b'*6, end = '', flush = True)
     imagecount += 1
