@@ -5,7 +5,7 @@ import os
 import sys
 
 if __name__ != "__main__":
-    print("File 'flickr.py' not meant for transendings and imports, direct use only")
+    print("File 'flickr.py' not meant for transcendings and imports, direct use only")
     sys.exit(0)
 
 #functions
