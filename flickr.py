@@ -15,7 +15,7 @@ def url_list_maker(uiv):
     url_list = []
     for photo in photos:
         try:
-            url_list.append(photo.get('url_o')) # o ->original size; other vars instead will cause error for some files due to unavailibility.
+            url_list.append(photo.get('url_o')) # o ->original size; other vars may not have all images.
         except: pass
     return url_list
 
@@ -28,6 +28,13 @@ def mkname(name):
         new_n = name + str(num)
     return new_n
     
+def checkIds(akv, skv, print_M = 0):
+    flickr_api.set_keys(api_key = akv, api_secret = skv)
+    try: flickr_api.Person.findByUserName('vicro_bot').id
+    except flickr_api.flickrerrors.FlickrAPIError:
+        if print_M: print("Wrong Keys!!", "Try again")
+        return 0
+    return 1
 
 #reading logs
 try:
@@ -50,6 +57,7 @@ for line in lines:
         bool_contain += 1
         dict_ids['id2'] = ''.join(line.split(' ')[1:])
 
+if bool_contain == 1: bool_contain = checkIds(dict_ids['id1'],dict_ids['id2'])
 if bool_contain == 1:
     inp_ask_old = input('Use previously saved keys?(Yes or No)').rstrip().lower()
     if inp_ask_old == 'yes':
@@ -57,19 +65,13 @@ if bool_contain == 1:
         api_key_val = dict_ids['id1']
         secret_key_val = dict_ids['id2']
         #print(secret_key_val)
-else:
+if not bool_ask_old:
     while 1:
         tjc = 1
         api_key_val = input('Give your API key  ').rstrip()
         secret_key_val = input('Give your API secret  ').rstrip()
-    
-        flickr_api.set_keys(api_key = api_key_val, api_secret = secret_key_val)
-        try: flickr_api.Person.findByUserName('vicro_bot').id
-        except flickr_api.flickrerrors.FlickrAPIError:
-            print("Wrong Keys!!", "Try again")
-            tjc = 0
+        tjc = checkIds(api_key_val,secret_key_val, print_M = 1)
         if tjc: break
-    
     writable = ['id1 {}\n'.format(api_key_val), 'id2 {}\n'.format(secret_key_val)]
     with open('logs', 'w+') as var:
         var.writelines(writable)
