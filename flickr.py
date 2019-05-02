@@ -67,11 +67,11 @@ if bool_contain == 1:
         #print(secret_key_val)
 if not bool_ask_old:
     while 1:
-        tjc = 1
+        var1_ = 1
         api_key_val = input('Give your API key  ').rstrip()
         secret_key_val = input('Give your API secret  ').rstrip()
-        tjc = checkIds(api_key_val,secret_key_val, print_M = 1)
-        if tjc: break
+        var1_ = checkIds(api_key_val,secret_key_val, print_M = 1)
+        if var1_: break
     writable = ['id1 {}\n'.format(api_key_val), 'id2 {}\n'.format(secret_key_val)]
     with open('logs', 'w+') as var:
         var.writelines(writable)
@@ -95,7 +95,7 @@ var = 100.0/(len(urls)*1.0)
 print('Downloading ... {:05}%'.format(int(counter)), end = '', flush = True)
 b, imagecount = 0, 1
 for i in urls:
-    try: urllib.request.urlretrieve( i, 'T{0}'.format(imagecount))
+    try: urllib.request.urlretrieve( i, '{1}{0}'.format(imagecount, user_name[:1]))
     except KeyboardInterrupt:
         print('\nAbort')
         sys.exit()
