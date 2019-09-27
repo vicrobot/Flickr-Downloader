@@ -2,6 +2,7 @@ import flickrapi
 import flickr_api
 import urllib.request
 import os, sys
+import time
 
 
 #######################
@@ -14,12 +15,13 @@ urls' completion and incompletion too.
 Its been a lot of if else, we need GUI.
 All inputs should be from a particular class and their exception handeling.
 Checking mimes of files downloaded and delete incomplete files.
-Animated printings.
+Animated printings' alignment.
+Files' extension appending
 """
 #######################
 
 if __name__ != "__main__":
-    print("File 'flickr.py' not meant for transcendings and imports, direct use only")
+    anim_write("File 'flickr.py' not meant for transcendings and imports, direct use only")
     sys.exit(0)
 
 #functions
@@ -60,9 +62,22 @@ def checkIds(akv, skv, print_M = 0):
     flickr_api.set_keys(api_key = akv, api_secret = skv)
     try: flickr_api.Person.findByUserName('vicro_bot').id
     except flickr_api.flickrerrors.FlickrAPIError:
-        if print_M: print("Wrong Keys!!", "Try again")
+        if print_M: anim_write("Wrong Keys!!", "Try again")
         return 0
     return 1
+
+def anim_write(*string, t = 0.05):
+    "AnimationWriter:- Prints iterable in fashion"
+    for i in string:
+        for j in i:
+            print(j, end = '', flush = True)
+            time.sleep(t)
+        print('\n')
+        time.sleep(0.02)
+
+def input_anim(string, t=0.05):
+    anim_write(string)
+    return input()
 
 def download(urls, filename, choice = 0, imagecount = 0):
     """
@@ -114,7 +129,7 @@ for line in lines:
 
 if bool_contain == 1: bool_contain = checkIds(dict_ids['id1'],dict_ids['id2'])
 if bool_contain == 1:
-    inp_ask_old = input('Use previously saved keys?(Yes or No): ').rstrip().lower()
+    inp_ask_old = input_anim('Use previously saved keys?(Yes or No): ').rstrip().lower()
     if inp_ask_old == 'yes':
         bool_ask_old = 1
         api_key_val = dict_ids['id1']
@@ -123,8 +138,8 @@ if bool_contain == 1:
 if not bool_ask_old:
     while 1:
         var1_ = 1
-        api_key_val = input('Give your API key  ').rstrip()
-        secret_key_val = input('Give your API secret  ').rstrip()
+        api_key_val = input_anim('Give your API key  ').rstrip()
+        secret_key_val = input_anim('Give your API secret  ').rstrip()
         var1_ = checkIds(api_key_val,secret_key_val, print_M = 1)
         if var1_: break
     writable = ['id1 {}\n'.format(api_key_val), 'id2 {}\n'.format(secret_key_val)]
@@ -136,10 +151,10 @@ flickr=flickrapi.FlickrAPI(api_key_val, secret_key_val)
 flickr_api.set_keys(api_key = api_key_val, api_secret = secret_key_val)
 
 types_uses = ['search through tags list', 'search through user name'] #more to be appended like a particular photoset &c
-choice = int(input('choose 0 for first element, 1 for second for\n{}\n'.format(types_uses)).rstrip())
+choice = int(input_anim('choose 0 for first element, 1 for second for\n{}'.format(types_uses)).rstrip())
 
 if choice == 1:
-    user_name = input('Give user name:-  \n').rstrip()
+    user_name = input_anim('Give user name:-  ').rstrip()
     user_id_val = flickr_api.Person.findByUserName(user_name).id
 
     #directory work
@@ -163,31 +178,42 @@ if choice == 1:
         urls = eval(lines_urls_lgs[0].rstrip())[imagecount :]
     download(urls, user_name, choice = 1, imagecount = imagecount)
 elif choice == 0:
-    bool_broad = int(input('You wanna search broad category or strict in tagging?\
+    bool_broad = int(input_anim('You wanna search broad category or strict in tagging?\
     (1 for former/prior, 0 for later);\n').rstrip())
-    text = input("Give a general text for search: ").strip()
+    text = input_anim("Give a general text for search: ").strip()
     if bool_broad == 1:
-        t = flickr.tags.getRelated(api_key = api_key_val, tag = input('give the tag name: ').rstrip())
+        t = flickr.tags.getRelated(api_key = api_key_val, tag = input_anim('give the tag name: ').rstrip())
         tags = [[j.text for j in i] for i in t][0]
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags, 
         text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o',
-        per_page = int(input('how many images(max 500): ').rstrip())) 
+        per_page = int(input_anim('how many images(max 500): ').rstrip())) 
         #there is media argument, per_page and page too. GUI handling needed.
     else:
-        tags = [i.strip() for i in input('give tags separated by comma: ').rstrip().split(',')]
+        tags = [i.strip() for i in input_anim('give tags separated by comma: ').rstrip().split(',')]
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags,
         text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o', 
-        per_page = int(input('how many images(max 500): ').rstrip()))
+        per_page = int(input_anim('how many images(max 500): ').rstrip()))
     photo_elems = [[j for j in i] for i in searched_elem][0]
     url_list = []
+    counter_photo, printed, len_p = 1, False, 0
     for p in photo_elems:
         try:
             dict_ = p.attrib
             md = flickr.photos.getSizes(api_key = api_key_val, photo_id = dict_['id'])
             t1 = [[j.attrib['source'] for j in i][-1] for i in md][0]
-            print(t1)
+            if printed: print('\b'*str_p, end = '', flush = 1)
+            str_p = 'No. of urls: {} '.format(counter_photo)
+            len_p = len(str_p)
+            print(str_p ,end = '', flush = 1)
+            printed = 1
+            counter_photo += 1
             url_list.append(t1)
-        except: print('Error occured in retrieving url,', 'Ignoring')
+        except KeyboardInterrupt: 
+            print('\nAbort')
+            sys.exit()
+        except:
+            printed = False
+            anim_write('Error occured in retrieving url, Ignoring')
     #directory work
     new_dir, old_dir = mkname('Flickr_Imgs_{}'.format('_'.join(text.split(' '))))
     if not os.path.exists(old_dir):
