@@ -57,7 +57,7 @@ def mkname(name):
 def checkIds(akv, skv, print_M = 0):
     """
     Checks whether the provided keys are correct or not.
-    akv is access key, akv is secret key.
+    akv is access key, skv is secret key.
     print_M is used for showing a message if keys were wrong.
     """
     flickr_api.set_keys(api_key = akv, api_secret = skv)
@@ -155,9 +155,10 @@ types_uses = ['search through tags list', 'search through user name'] #more to b
 choice = int(input_anim('choose 0 for first element, 1 for second for\n{}'.format(types_uses)).rstrip())
 
 if choice == 1:
+    # i.e. choice is "search through user name"
     user_name = input_anim('Give user name:-  ').rstrip()
     user_id_val = flickr_api.Person.findByUserName(user_name).id
-
+    
     #directory work
     new_dir, old_dir = mkname('Flickr_Imgs_{}'.format('_'.join(user_name.split(' '))))
     if not os.path.exists(old_dir):
@@ -178,10 +179,13 @@ if choice == 1:
         if susp_int: imagecount = int(susp_int) -1
         urls = eval(lines_urls_lgs[0].rstrip())[imagecount :]
     download(urls, user_name, choice = 1, imagecount = imagecount)
+
 elif choice == 0:
+    #i.e. choice is "search through tags list"
     bool_broad = int(input_anim('You wanna search broad category or strict in tagging?\
     (1 for former/prior, 0 for later):').rstrip())
     text = input_anim("Give a general text for search: ").strip()
+    
     if bool_broad == 1:
         t = flickr.tags.getRelated(api_key = api_key_val, tag = input_anim('give the tag name: ').rstrip())
         tags = [[j.text for j in i] for i in t][0]
@@ -194,6 +198,7 @@ elif choice == 0:
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags,
         text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o', 
         per_page = int(input_anim('how many images(max 500): ').rstrip()))
+    
     photo_elems = [[j for j in i] for i in searched_elem][0]
     url_list = []
     counter_photo, printed, len_p = 1, False, 0
