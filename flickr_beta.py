@@ -13,6 +13,8 @@ urls' completion and incompletion too.
 
 Its been a lot of if else, we need GUI.
 All inputs should be from a particular class and their exception handeling.
+Checking mimes of files downloaded and delete incomplete files.
+Animated printings.
 """
 #######################
 
@@ -168,7 +170,9 @@ elif choice == 0:
         t = flickr.tags.getRelated(api_key = api_key_val, tag = input('give the tag name: ').rstrip())
         tags = [[j.text for j in i] for i in t][0]
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags, 
-        text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o') #there is media argument, per_page and page too. GUI handling needed.
+        text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o',
+        per_page = int(input('how many images(max 500): ').rstrip())) 
+        #there is media argument, per_page and page too. GUI handling needed.
     else:
         tags = [i.strip() for i in input('give tags separated by comma: ').rstrip().split(',')]
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags,
