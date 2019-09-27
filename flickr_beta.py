@@ -17,6 +17,7 @@ All inputs should be from a particular class and their exception handeling.
 Checking mimes of files downloaded and delete incomplete files.
 Animated printings' alignment.
 Files' extension appending
+Aborting for connection reset; and retrying for failure.
 """
 #######################
 
@@ -72,7 +73,7 @@ def anim_write(*string, t = 0.05):
         for j in i:
             print(j, end = '', flush = True)
             time.sleep(t)
-        print('\n')
+        print('')
         time.sleep(0.02)
 
 def input_anim(string, t=0.05):
@@ -90,7 +91,7 @@ def download(urls, filename, choice = 0, imagecount = 0):
     var = 100.0/(len(urls)*1.0)
     print('Downloading ... {:05}%'.format(int(counter)), end = '', flush = True)
     for i in urls:
-        try: urllib.request.urlretrieve( i, '{1}{0}'.format(imagecount, filename[0]))
+        try: urllib.request.urlretrieve( i, '{1}{0}.{2}'.format(imagecount, filename[0], i.split('.')[-1]))
         except KeyboardInterrupt:
             if choice == 1:
                 #only for choice == 1 since no need to store urls for search results as they vary.
@@ -179,7 +180,7 @@ if choice == 1:
     download(urls, user_name, choice = 1, imagecount = imagecount)
 elif choice == 0:
     bool_broad = int(input_anim('You wanna search broad category or strict in tagging?\
-    (1 for former/prior, 0 for later);\n').rstrip())
+    (1 for former/prior, 0 for later):').rstrip())
     text = input_anim("Give a general text for search: ").strip()
     if bool_broad == 1:
         t = flickr.tags.getRelated(api_key = api_key_val, tag = input_anim('give the tag name: ').rstrip())
@@ -196,13 +197,14 @@ elif choice == 0:
     photo_elems = [[j for j in i] for i in searched_elem][0]
     url_list = []
     counter_photo, printed, len_p = 1, False, 0
+    print('No. of urls: ', end = '', flush = 1)
     for p in photo_elems:
         try:
             dict_ = p.attrib
             md = flickr.photos.getSizes(api_key = api_key_val, photo_id = dict_['id'])
             t1 = [[j.attrib['source'] for j in i][-1] for i in md][0]
-            if printed: print('\b'*str_p, end = '', flush = 1)
-            str_p = 'No. of urls: {} '.format(counter_photo)
+            if printed: print('\b'*len_p, end = '', flush = 1)
+            str_p = '{} '.format(counter_photo)
             len_p = len(str_p)
             print(str_p ,end = '', flush = 1)
             printed = 1
@@ -220,6 +222,7 @@ elif choice == 0:
         os.mkdir(new_dir)
         os.chdir(new_dir)
     else: os.chdir(old_dir)
+    print('')
     download(url_list, text, choice = 0)
 
 
