@@ -46,7 +46,7 @@ def checkIds(akv, skv, print_M = 0):
         return 0
     return 1
 
-def anim_write(*string, t = 0.05):
+def anim_write(*string, t = 0.02):
     "AnimationWriter:- Prints iterable in fashion"
     for i in string:
         for j in i:
