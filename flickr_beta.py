@@ -96,13 +96,13 @@ elif choice == 0:
         t = flickr.tags.getRelated(api_key = api_key_val, tag = input_anim('give the tag name: ').rstrip())
         tags = [[j.text for j in i] for i in t][0]
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags, 
-        text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o',
+        text = text, accuracy = 1, content_type = 1, extras = 'url_o',
         per_page = int(input_anim('how many images(max 500): ').rstrip())) 
         #there is media argument, per_page and page too. GUI handling needed.
     else:
         tags = [i.strip() for i in input_anim('give tags separated by comma: ').rstrip().split(',')]
         searched_elem = flickr.photos.search(api_key = api_key_val, tags = tags,
-        text = text, accuracy = 1, safe_search = 1, content_type = 1, extras = 'url_o', 
+        text = text, accuracy = 1, content_type = 1, extras = 'url_o', 
         per_page = int(input_anim('how many images(max 500): ').rstrip()))
     
     photo_elems = [[j for j in i] for i in searched_elem][0]
